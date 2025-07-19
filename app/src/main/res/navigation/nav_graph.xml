@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/matchesFragment" >
+
+    <fragment
+        android:id="@+id/matchesFragment"
+        android:name="com.android.goandroiddevelopertest.presentation.fragments.MatchesFragment"
+        android:label="@string/matches_fragment_label"/>
+    <fragment
+        android:id="@+id/competitionsFragment"
+        android:name="com.android.goandroiddevelopertest.presentation.fragments.CompetitionFragment"
+        android:label="@string/competitions_fragment_label">
+
+        <action
+            android:id="@+id/action_competitionsFragment_to_competitionDetailsFragment"
+            app:destination="@id/competitionDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/competitionDetailsFragment"
+        android:name="com.android.goandroiddevelopertest.presentation.fragments.CompetitionDetailsFragment"
+        android:label="CompetitionDetailsFragment" />
+</navigation>
