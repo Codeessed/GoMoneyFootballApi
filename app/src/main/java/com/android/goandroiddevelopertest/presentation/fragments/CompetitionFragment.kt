@@ -1,26 +1,34 @@
 package com.android.goandroiddevelopertest.presentation.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.goandroiddevelopertest.BottomNavigationController
 import com.android.goandroiddevelopertest.FlowObserver.observer
 import com.android.goandroiddevelopertest.OnCompetitionItemClickListener
 import com.android.goandroiddevelopertest.R
+import com.android.goandroiddevelopertest.Resource
 import com.android.goandroiddevelopertest.data.model.CompetitionModel
-import com.android.goandroiddevelopertest.data.model.CompetitionResponseModel
 import com.android.goandroiddevelopertest.databinding.FragmentCompetitionBinding
 import com.android.goandroiddevelopertest.presentation.adapter.CompetitionsAdapter
 import com.android.goandroiddevelopertest.viewmodel.GoAndroidViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CompetitionFragment : Fragment(), OnCompetitionItemClickListener {
@@ -32,6 +40,8 @@ class CompetitionFragment : Fragment(), OnCompetitionItemClickListener {
 
     private lateinit var competitionsAdapter: CompetitionsAdapter
     private lateinit var competitionRecycler: RecyclerView
+    private lateinit var competitionRefresh: SwipeRefreshLayout
+    private lateinit var competitionError: ConstraintLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,21 +56,39 @@ class CompetitionFragment : Fragment(), OnCompetitionItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        competitionError = binding.competitionErrorContainer
         competitionRecycler = binding.competitionsRv
+        competitionRefresh = binding.competitionsRefresh
         binding.competitionCollapsingToolbar.isTitleEnabled = false
         binding.competitionToolbar.setTitle("Competitions")
+        competitionRefresh.setOnRefreshListener {
+            goAndroidViewModel.refreshAllMatches()
+        }
+        binding.competitionRetryButton.setOnClickListener {
+            goAndroidViewModel.refreshAllMatches()
+        }
         hideBottomNavigationOnScroll()
 
         observer(goAndroidViewModel.allMatches){ allMatches ->
+            competitionRefresh.isRefreshing = false
+            competitionRecycler.isVisible = true
+            competitionError.isVisible = false
             when(allMatches){
-                is GoAndroidViewModel.GoEvent.MatchesSuccessEvent -> {
-                    setupCompetitionRecycler(allMatches.matchesResult.competitions)
+                is Resource.Success -> {
+                    setupCompetitionRecycler(allMatches.data ?: emptyList())
                 }
-                is GoAndroidViewModel.GoEvent.Error -> {
-                    Toast.makeText(requireContext(), allMatches.errorText, Toast.LENGTH_SHORT).show()
+                is Resource.Error -> {
+                    if(!allMatches.data.isNullOrEmpty()){
+                        Toast.makeText(requireContext(), allMatches.message, Toast.LENGTH_SHORT).show()
+                        setupCompetitionRecycler(allMatches.data)
+                        return@observer
+                    }
+                    binding.competitionErrorMessage.text = allMatches.message ?: ""
+                    competitionRecycler.isVisible = false
+                    competitionError.isVisible = true
                 }
-                is GoAndroidViewModel.GoEvent.Empty -> {
-                    goAndroidViewModel.getAllMatches()
+                is Resource.Loading -> {
+                    competitionRefresh.isRefreshing = true
                 }
                 else -> Unit
             }
@@ -69,6 +97,7 @@ class CompetitionFragment : Fragment(), OnCompetitionItemClickListener {
     }
 
     private fun setupCompetitionRecycler(competitionList: List<CompetitionModel>){
+        competitionsAdapter = CompetitionsAdapter(requireContext(), this)
         competitionsAdapter = CompetitionsAdapter(requireContext(), this)
         competitionRecycler.layoutManager = LinearLayoutManager(requireContext())
         competitionRecycler.adapter = competitionsAdapter

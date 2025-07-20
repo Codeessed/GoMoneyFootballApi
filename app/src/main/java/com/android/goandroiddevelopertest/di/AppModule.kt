@@ -1,8 +1,11 @@
 package com.android.goandroiddevelopertest.di
 
 import android.content.Context
+import androidx.room.Room
 import com.android.goandroiddevelopertest.Constants
 import com.android.goandroiddevelopertest.data.remotedata.GoApiInterface
+import com.android.goandroiddevelopertest.db.GoDao
+import com.android.goandroiddevelopertest.db.GoDatabase
 import com.android.goandroiddevelopertest.domain.repository.GoRepositoryImpl
 import com.android.goandroiddevelopertest.domain.repository.GoRepositoryInterface
 import dagger.Module
@@ -14,7 +17,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -44,7 +46,25 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesGoRepository(goApiInterface: GoApiInterface): GoRepositoryInterface =
-        GoRepositoryImpl(goApiInterface)
+    fun providesGoRepositoryImpl(
+        goApiInterface: GoApiInterface,
+        goDao: GoDao
+    ): GoRepositoryInterface = GoRepositoryImpl(goApiInterface, goDao)
+
+
+    @Provides
+    @Singleton
+    fun providesGoDao(goDatabase: GoDatabase) = goDatabase.dao
+
+    @Provides
+    @Singleton
+    fun provideGoDatabase(
+        @ApplicationContext context: Context
+    ) =
+        Room.databaseBuilder(
+            context,
+            GoDatabase::class.java,
+            "go_database"
+        ).build()
 
 }
