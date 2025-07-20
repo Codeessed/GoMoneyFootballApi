@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.goandroiddevelopertest.OnTeamItemClickListener
 import com.android.goandroiddevelopertest.databinding.FragmentTeamBinding
 import com.android.goandroiddevelopertest.presentation.adapter.TeamAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TeamsFragment : Fragment(), OnTeamItemClickListener {
 
     private var _binding: FragmentTeamBinding? = null

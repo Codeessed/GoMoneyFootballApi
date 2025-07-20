@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.goandroiddevelopertest.databinding.FragmentTableBinding
 import com.android.goandroiddevelopertest.presentation.adapter.TableAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TableFragment : Fragment() {
 
     private var _binding: FragmentTableBinding? = null

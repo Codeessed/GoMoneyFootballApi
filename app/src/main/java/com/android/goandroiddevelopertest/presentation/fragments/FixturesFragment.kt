@@ -13,7 +13,9 @@ import com.android.goandroiddevelopertest.databinding.FragmentFixturesBinding
 import com.android.goandroiddevelopertest.databinding.FragmentTableBinding
 import com.android.goandroiddevelopertest.presentation.adapter.CompetitionsAdapter
 import com.android.goandroiddevelopertest.presentation.adapter.MatchesAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FixturesFragment : Fragment() {
 
     private var _binding: FragmentFixturesBinding? = null
@@ -45,7 +47,7 @@ class FixturesFragment : Fragment() {
 //        competitionsAdapter = CompetitionsAdapter(requireContext())
         competitionRecycler.layoutManager = LinearLayoutManager(requireContext())
         competitionRecycler.adapter = competitionsAdapter
-        competitionsAdapter.differ.submitList((1..30).map { it.toString() })
+//        competitionsAdapter.differ.submitList((1..30).map { it.toString() })
     }
 
     private fun hideBottomNavigationOnScroll() {

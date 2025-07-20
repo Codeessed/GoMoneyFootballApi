@@ -1,21 +1,28 @@
 package com.android.goandroiddevelopertest.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.goandroiddevelopertest.BottomNavigationController
+import com.android.goandroiddevelopertest.FlowObserver.observer
 import com.android.goandroiddevelopertest.databinding.FragmentMatchesBinding
 import com.android.goandroiddevelopertest.presentation.adapter.MatchesAdapter
+import com.android.goandroiddevelopertest.viewmodel.GoAndroidViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MatchesFragment : Fragment() {
 
     private var _binding: FragmentMatchesBinding? = null
     private val binding get() = _binding!!
 
+    private val goAndroidViewModel: GoAndroidViewModel by activityViewModels()
     private lateinit var matchAdapter: MatchesAdapter
     private lateinit var matchRecycler: RecyclerView
 
@@ -36,6 +43,24 @@ class MatchesFragment : Fragment() {
         binding.matchesToolbar.setTitle("Today's Fixtures")
         setupMatchRecycler()
         hideBottomNavigationOnScroll()
+
+
+//        observer(goAndroidViewModel.allMatches){ allMatches ->
+//            when(allMatches){
+//                is GoAndroidViewModel.GoEvent.MatchesSuccessEvent -> {
+//                   Log.d("all_matches", allMatches.matchesResult)
+//                }
+//                is GoAndroidViewModel.GoEvent.Error -> {
+//                    Log.d("all_matches", allMatches.errorText)
+//                }
+//                is GoAndroidViewModel.GoEvent.Empty -> {
+//                    goAndroidViewModel.getAllMatches()
+//                }
+//                else -> {
+//                    Log.d("all_matches", allMatches.toString())
+//                }
+//            }
+//        }
     }
 
     private fun setupMatchRecycler(){

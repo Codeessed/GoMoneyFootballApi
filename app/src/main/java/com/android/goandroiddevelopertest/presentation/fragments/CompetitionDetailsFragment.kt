@@ -13,7 +13,9 @@ import com.android.goandroiddevelopertest.databinding.FragmentCompetitionDetails
 import com.android.goandroiddevelopertest.presentation.adapter.CompetitionDetailsViewpagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CompetitionDetailsFragment: Fragment() {
     private var _binding: FragmentCompetitionDetailsBinding? = null
     private val binding get() = _binding!!
