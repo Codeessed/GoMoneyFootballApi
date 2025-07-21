@@ -7,10 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.goandroiddevelopertest.OnCompetitionItemClickListener
-import com.android.goandroiddevelopertest.data.model.CompetitionModel
-import com.android.goandroiddevelopertest.data.model.CompetitionResponseModel
+import com.android.goandroiddevelopertest.db.entities.Competition
 import com.android.goandroiddevelopertest.databinding.CompetitionItemBinding
-import com.android.goandroiddevelopertest.databinding.MatchItemBinding
 
 class CompetitionsAdapter(private  val context: Context, private val onCompetitionItemClickListener: OnCompetitionItemClickListener): RecyclerView.Adapter<CompetitionsAdapter.CompetitionViewHolder>(){
 
@@ -21,7 +19,7 @@ class CompetitionsAdapter(private  val context: Context, private val onCompetiti
             binding.apply {
                 competitionTitle.text = competition.name
                 competitionItem.setOnClickListener{
-                    onCompetitionItemClickListener.onCompetitionClick(position)
+                    onCompetitionItemClickListener.onCompetitionClick(competition.competitionId)
                 }
             }
 
@@ -43,17 +41,17 @@ class CompetitionsAdapter(private  val context: Context, private val onCompetiti
         return differ.currentList.size
     }
 
-    private val differList = object: DiffUtil.ItemCallback<CompetitionModel>(){
+    private val differList = object: DiffUtil.ItemCallback<Competition>(){
         override fun areItemsTheSame(
-            oldItem: CompetitionModel,
-            newItem: CompetitionModel
+            oldItem: Competition,
+            newItem: Competition
         ): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.competitionId == newItem.competitionId
         }
 
         override fun areContentsTheSame(
-            oldItem: CompetitionModel,
-            newItem: CompetitionModel
+            oldItem: Competition,
+            newItem: Competition
         ): Boolean {
             return oldItem == newItem
         }

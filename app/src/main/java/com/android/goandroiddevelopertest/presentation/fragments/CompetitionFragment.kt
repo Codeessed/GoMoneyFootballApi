@@ -9,9 +9,6 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,14 +18,11 @@ import com.android.goandroiddevelopertest.FlowObserver.observer
 import com.android.goandroiddevelopertest.OnCompetitionItemClickListener
 import com.android.goandroiddevelopertest.R
 import com.android.goandroiddevelopertest.Resource
-import com.android.goandroiddevelopertest.data.model.CompetitionModel
+import com.android.goandroiddevelopertest.db.entities.Competition
 import com.android.goandroiddevelopertest.databinding.FragmentCompetitionBinding
 import com.android.goandroiddevelopertest.presentation.adapter.CompetitionsAdapter
 import com.android.goandroiddevelopertest.viewmodel.GoAndroidViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CompetitionFragment : Fragment(), OnCompetitionItemClickListener {
@@ -62,14 +56,14 @@ class CompetitionFragment : Fragment(), OnCompetitionItemClickListener {
         binding.competitionCollapsingToolbar.isTitleEnabled = false
         binding.competitionToolbar.setTitle("Competitions")
         competitionRefresh.setOnRefreshListener {
-            goAndroidViewModel.refreshAllMatches()
+            goAndroidViewModel.refreshAllCompetitions()
         }
         binding.competitionRetryButton.setOnClickListener {
-            goAndroidViewModel.refreshAllMatches()
+            goAndroidViewModel.refreshAllCompetitions()
         }
         hideBottomNavigationOnScroll()
 
-        observer(goAndroidViewModel.allMatches){ allMatches ->
+        observer(goAndroidViewModel.allCompetitions){ allMatches ->
             competitionRefresh.isRefreshing = false
             competitionRecycler.isVisible = true
             competitionError.isVisible = false
@@ -96,7 +90,7 @@ class CompetitionFragment : Fragment(), OnCompetitionItemClickListener {
 
     }
 
-    private fun setupCompetitionRecycler(competitionList: List<CompetitionModel>){
+    private fun setupCompetitionRecycler(competitionList: List<Competition>){
         competitionsAdapter = CompetitionsAdapter(requireContext(), this)
         competitionsAdapter = CompetitionsAdapter(requireContext(), this)
         competitionRecycler.layoutManager = LinearLayoutManager(requireContext())
@@ -121,7 +115,8 @@ class CompetitionFragment : Fragment(), OnCompetitionItemClickListener {
         _binding = null
     }
 
-    override fun onCompetitionClick(position: Int) {
+    override fun onCompetitionClick(competitionId: Int) {
+        goAndroidViewModel.updatedSelectedCompetitionId(competitionId)
         findNavController().navigate(R.id.action_competitionsFragment_to_competitionDetailsFragment)
     }
 }

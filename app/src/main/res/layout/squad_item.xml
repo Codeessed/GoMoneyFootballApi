@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="5dp"
     android:layout_marginTop="10dp">
 
     <TextView
-        android:id="@+id/table_team_position"
+        android:id="@+id/squad_index"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -19,19 +20,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5" />
 
-    <ImageView
-        android:id="@+id/table_team_img"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="15dp"
-        android:src="@drawable/ic_soccer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/table_team_position"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
-
     <TextView
-        android:id="@+id/table_team_name"
+        android:id="@+id/squad_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -42,45 +32,19 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/first_no"
-        app:layout_constraintStart_toEndOf="@id/table_team_img"
+        app:layout_constraintEnd_toStartOf="@id/squad_position"
+        app:layout_constraintStart_toEndOf="@id/squad_index"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5" />
 
     <TextView
-        android:id="@+id/first_no"
+        android:id="@+id/squad_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:text="10"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/second_no"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
-
-    <TextView
-        android:id="@+id/second_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:text="20"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/third_no"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
-
-    <TextView
-        android:id="@+id/third_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="30"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:layout_marginEnd="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -90,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray"
-        app:layout_constraintTop_toBottomOf="@id/table_team_position"
+        app:layout_constraintTop_toBottomOf="@id/squad_index"
         android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

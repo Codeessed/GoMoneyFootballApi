@@ -17,6 +17,7 @@ hilt = "2.51.1"
 ksp = "2.1.0-1.0.29"
 room = "2.7.2"
 androidx = "1.1.0"
+coil = "2.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +40,8 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 refresh = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -6,12 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.goandroiddevelopertest.BottomNavigationController
 import com.android.goandroiddevelopertest.FlowObserver.observer
 import com.android.goandroiddevelopertest.databinding.FragmentMatchesBinding
+import com.android.goandroiddevelopertest.db.entities.Match
 import com.android.goandroiddevelopertest.presentation.adapter.MatchesAdapter
 import com.android.goandroiddevelopertest.viewmodel.GoAndroidViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +31,8 @@ class MatchesFragment : Fragment() {
     private val goAndroidViewModel: GoAndroidViewModel by activityViewModels()
     private lateinit var matchAdapter: MatchesAdapter
     private lateinit var matchRecycler: RecyclerView
+    private lateinit var matchesRefresh: SwipeRefreshLayout
+    private lateinit var matchesError: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,36 +47,50 @@ class MatchesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        matchesError = binding.matchesErrorMessage
+        matchRecycler = binding.matchesRv
+        matchesRefresh = binding.matchesRefresh
         binding.matchesCollapsingToolbar.isTitleEnabled = false
         binding.matchesToolbar.setTitle("Today's Fixtures")
-        setupMatchRecycler()
+        matchesRefresh.setOnRefreshListener {
+            goAndroidViewModel.getAllMatches()
+        }
         hideBottomNavigationOnScroll()
 
 
-//        observer(goAndroidViewModel.allMatches){ allMatches ->
-//            when(allMatches){
-//                is GoAndroidViewModel.GoEvent.MatchesSuccessEvent -> {
-//                   Log.d("all_matches", allMatches.matchesResult)
-//                }
-//                is GoAndroidViewModel.GoEvent.Error -> {
-//                    Log.d("all_matches", allMatches.errorText)
-//                }
-//                is GoAndroidViewModel.GoEvent.Empty -> {
-//                    goAndroidViewModel.getAllMatches()
-//                }
-//                else -> {
-//                    Log.d("all_matches", allMatches.toString())
-//                }
-//            }
-//        }
+
+
+        observer(goAndroidViewModel.allMatchesState){ allMatchesState ->
+            matchesRefresh.isRefreshing = false
+            matchRecycler.isVisible = true
+            matchesError.isVisible = false
+            when(allMatchesState){
+                is GoAndroidViewModel.GoEvent.AllMatchesSuccessEvent -> {
+                    if (allMatchesState.result.matches.isEmpty()){
+                        matchesError.text = "No match fixtures for today, swipe to refresh"
+                        matchRecycler.isVisible = false
+                        matchesError.isVisible = true
+                    }
+                }
+                is GoAndroidViewModel.GoEvent.Error -> {
+                    matchesError.text = allMatchesState.error
+                    matchRecycler.isVisible = false
+                    matchesError.isVisible = true
+                }
+                is GoAndroidViewModel.GoEvent.Loading -> {
+                    matchesRefresh.isRefreshing = true
+                }
+                else -> goAndroidViewModel.getAllMatches()
+            }
+        }
+
     }
 
-    private fun setupMatchRecycler(){
-        matchRecycler = binding.matchesRv
+    private fun setupMatchRecycler(list: List<Match>){
         matchAdapter = MatchesAdapter(requireContext())
         matchRecycler.layoutManager = LinearLayoutManager(requireContext())
         matchRecycler.adapter = matchAdapter
-        matchAdapter.differ.submitList((1..30).map { it.toString() })
+        matchAdapter.differ.submitList(list)
     }
 
     private fun hideBottomNavigationOnScroll() {

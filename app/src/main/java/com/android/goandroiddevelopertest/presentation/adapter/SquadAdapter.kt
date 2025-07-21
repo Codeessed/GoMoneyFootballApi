@@ -7,37 +7,44 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.android.goandroiddevelopertest.Constants.fromIsoToString
 import com.android.goandroiddevelopertest.OnCompetitionItemClickListener
 import com.android.goandroiddevelopertest.OnTeamItemClickListener
 import com.android.goandroiddevelopertest.R
 import com.android.goandroiddevelopertest.databinding.CompetitionItemBinding
 import com.android.goandroiddevelopertest.databinding.MatchItemBinding
+import com.android.goandroiddevelopertest.databinding.SquadItemBinding
+import com.android.goandroiddevelopertest.databinding.TableItemBinding
 import com.android.goandroiddevelopertest.databinding.TeamItemBinding
-import com.android.goandroiddevelopertest.db.entities.Team
+import com.android.goandroiddevelopertest.db.entities.Squad
+import com.android.goandroiddevelopertest.db.entities.Table
 
-class TeamAdapter(private  val context: Context, private val onTeamItemClickListener: OnTeamItemClickListener): RecyclerView.Adapter<TeamAdapter.TeamViewHolder>(){
+class SquadAdapter(private  val context: Context): RecyclerView.Adapter<SquadAdapter.SquadViewHolder>(){
 
-    inner class TeamViewHolder(private val binding: TeamItemBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class SquadViewHolder(private val binding: SquadItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int){
-            val team = differ.currentList[position]
-            binding.competitionTeamName.text = team.shortName
-            binding.competitionTeamImg.load(team.crest){
-                crossfade(true)
+
+            val squad = differ.currentList[position]
+
+            binding.apply {
+
+                squadIndex.text = position.toString()
+                squadPosition.text = squad.position
+                squadName.text = squad.name
+
             }
-            binding.teamCard.setOnClickListener {
-                onTeamItemClickListener.onTeamClick(team)
-            }
+
         }
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): TeamViewHolder {
-        return TeamViewHolder(TeamItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    ): SquadViewHolder {
+        return SquadViewHolder(SquadItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
-    override fun onBindViewHolder(holder: TeamViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SquadViewHolder, position: Int) {
         holder.bind(position)
     }
 
@@ -45,17 +52,17 @@ class TeamAdapter(private  val context: Context, private val onTeamItemClickList
         return differ.currentList.size
     }
 
-    private val differList = object: DiffUtil.ItemCallback<Team>(){
+    private val differList = object: DiffUtil.ItemCallback<Squad>(){
         override fun areItemsTheSame(
-            oldItem: Team,
-            newItem: Team
+            oldItem: Squad,
+            newItem: Squad
         ): Boolean {
-            return oldItem.teamId == newItem.teamId
+            return oldItem.squadId == newItem.squadId
         }
 
         override fun areContentsTheSame(
-            oldItem: Team,
-            newItem: Team
+            oldItem: Squad,
+            newItem: Squad
         ): Boolean {
             return oldItem == newItem
         }

@@ -13,6 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -27,7 +28,16 @@ object AppModule {
     @Singleton
     fun providesRetrofitInstance(): Retrofit {
         val logger = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        val headerInterceptor = Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .addHeader("X-Auth-Token", "b098a008952b46d397a15a261050d77d")
+                .addHeader("Accept", "application/json")
+                // Add more headers if needed
+                .build()
+            chain.proceed(request)
+        }
         val client = OkHttpClient.Builder()
+            .addInterceptor(headerInterceptor)
             .addInterceptor(logger)
             .build()
         val retrofit = Retrofit.Builder()
