@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.goandroiddevelopertest.BottomNavigationController
 import com.android.goandroiddevelopertest.FlowObserver.observer
+import com.android.goandroiddevelopertest.data.model.MatchModel
 import com.android.goandroiddevelopertest.databinding.FragmentMatchesBinding
 import com.android.goandroiddevelopertest.db.entities.Match
+import com.android.goandroiddevelopertest.presentation.adapter.FixturesAdapter
 import com.android.goandroiddevelopertest.presentation.adapter.MatchesAdapter
 import com.android.goandroiddevelopertest.viewmodel.GoAndroidViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +31,7 @@ class MatchesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val goAndroidViewModel: GoAndroidViewModel by activityViewModels()
-    private lateinit var matchAdapter: MatchesAdapter
+    private lateinit var matchAdapter: FixturesAdapter
     private lateinit var matchRecycler: RecyclerView
     private lateinit var matchesRefresh: SwipeRefreshLayout
     private lateinit var matchesError: TextView
@@ -71,6 +73,7 @@ class MatchesFragment : Fragment() {
                         matchRecycler.isVisible = false
                         matchesError.isVisible = true
                     }
+                    setupMatchRecycler(allMatchesState.result.matches)
                 }
                 is GoAndroidViewModel.GoEvent.Error -> {
                     matchesError.text = allMatchesState.error
@@ -86,8 +89,8 @@ class MatchesFragment : Fragment() {
 
     }
 
-    private fun setupMatchRecycler(list: List<Match>){
-        matchAdapter = MatchesAdapter(requireContext())
+    private fun setupMatchRecycler(list: List<MatchModel>){
+        matchAdapter = FixturesAdapter(requireContext())
         matchRecycler.layoutManager = LinearLayoutManager(requireContext())
         matchRecycler.adapter = matchAdapter
         matchAdapter.differ.submitList(list)
