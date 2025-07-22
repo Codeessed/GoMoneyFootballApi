@@ -100,7 +100,7 @@ class GoRepositoryImpl @Inject constructor(
                     teamList.map {
                         Team(
                             teamId = it.id,
-                            shortName = it.shortName,
+                            shortName = it.shortName ?: "",
                             crest = it.crest
                         )
                     }
@@ -143,7 +143,7 @@ class GoRepositoryImpl @Inject constructor(
                             matchday = it.matchday,
                             utcDate = it.utcDate,
                             homeTeamName = it.homeTeam.shortName,
-                            awayTeamName = it.awayTeam.shortName,
+                            awayTeamName = it.awayTeam.shortName ?: "",
                             homeTeamScore = it.score.fullTime.home,
                             awayTeamScore = it.score.fullTime.away,
                             competitionId = competitionId
@@ -176,7 +176,7 @@ class GoRepositoryImpl @Inject constructor(
                     standingList.map {
                         Table(
                             teamId = it.team.id,
-                            shortName = it.team.shortName,
+                            shortName = it.team.shortName ?: "",
                             crest = it.team.crest,
                             position = it.position,
                             playedGames = it.playedGames,
