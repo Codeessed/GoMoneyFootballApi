@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.animation.AnimationUtils
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.isVisible
 import androidx.navigation.NavGraph
 import androidx.navigation.findNavController
@@ -28,7 +30,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationController {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         binding = ActivityMainBinding.inflate(layoutInflater)
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(binding.root)
 
         bottomNav = binding.bottomNav
